@@ -1,0 +1,60 @@
+spring:
+  mvc:
+    servlet:
+      load-on-startup: 1
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
+    sender:
+      type: web
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+
+# 路由规则
+# sensitiveHeaders过滤客户端附带的headers，如：sensitiveHeaders: X-ABC ,如果在发请求时带了X-ABC，那么X-ABC不会往下游服务传递
+zuul:
+  ignored-services: '*'
+  sensitiveHeaders: 
+  routes:
+    oauth:
+      path: /api-o/**
+      serviceId: oauth-center
+    api-u:
+      path: /api-u/**
+      serviceId: user-center
+    backend:
+      path: /api-b/**
+      serviceId: manage-backend
+    log:
+      path: /api-l/**
+      serviceId: log-center
+    file:
+      path: /api-f/**
+      serviceId: file-center
+    sms:
+      path: /api-n/**
+      serviceId: notification-center
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+  add-proxy-headers: true
+  ribbon:
+    eager-load:
+      enabled: true
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+# 这里有个cron定时任务表达式，每5分钟执行一次,com.cloud.gateway.filter.BlackIPAccessFilter
+cron:
+  black-ip: 0 0/5 * * * ?

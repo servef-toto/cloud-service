@@ -1,0 +1,94 @@
+# 日志级别以及日志文件输出位置
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+
+spring:
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://local.mysql.com:3306/cloud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-test-query: SELECT 1
+
+  # rabbitmq的配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+  # redis的配置
+  redis:
+    host: local.redis.com
+    port: 6379
+    password:
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+  # springmvc的配置，springmvc的dispachatservlet在系统启动的时候就加载出来
+  mvc:
+    servlet:
+      load-on-startup: 1
+  # aop代理的配置
+  aop:
+    proxy-target-class: true
+
+  # zipkin请求链路的跟踪管理的配置,增加Zipkin Server的配置信息
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
+    sender:
+      type: web
+
+# mybatis的配置
+mybatis:
+  type-aliases-package: com.cloud.model.user  #
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+
+# 认证鉴权的配置，可以获取用户的信息和权限信息
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://local.gateway.com:8080/api-o/user-me
+      prefer-token-info: false  # 是否使用token info，默认为tru
+
+
+# 微信公众号配置 详细看下代码com.cloud.user.service.impl.WechatServiceImpl和
+          #cloud-service\manage-backend\src\main\resources\static\pages\wechat\index.html
+wechat:
+  domain: http://api.gateway.com:8080/api-u
+#  domain: http://f6c92912.ngrok.io/api-u
+  infos:
+    app1:
+      appid: wx22cc2e471b5201b8
+      secret: 56453462fa28e4fdf66eebece28ce391
+#    app2:
+#      appid: xxx
+#      secret: xxx
+
+# ribbon 以及 hystrix 的配置
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
