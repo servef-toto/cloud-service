@@ -32,7 +32,7 @@ spring:
           default-label: master # 默认分支配置部分,未配置label的时候默认使用的分支
           force-pull: true #配置为true表示如果本地副本是脏的，将使Spring Cloud Config Server强制从远程存储库拉取配置。
           searchPaths: 'configs/{profile}'  #仓库文件夹目录，如果是/**，就是所有目录所有文件
-          basedir: classpath:/configs/{profile} #配置文件拉去到本地的目录位置
+          basedir: configs/basedir #配置文件拉去到本地的目录位置
           username: servef-toto
           password: 0311aiWuLiuHong
 
