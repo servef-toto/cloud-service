@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>短信登录</title>
+<link href="css/login.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+	<div class="login">
+		<div class="message">后台管理系统</div>
+		<div id="darkbannerwrap"></div>
+
+		<form id="login-form" method="post" onsubmit="return false;">
+			<table style="width: 100%">
+				<!--<tr>-->
+					<!--<td width="50%">-->
+						<!--<input id="phone" name="phone" placeholder="手机号" type="text" maxlength="11" autocomplete="off">-->
+					<!--</td>-->
+					<!--<td>-->
+						<!--<button id="btnSendCode" class="btn btn-primary" onclick="sendSms()" disabled="disabled">发送</button>-->
+					<!--</td>-->
+				<!--</tr>-->
+				<!--<tr>-->
+					<!--<td>-->
+					<!--<input id="code" name="code" placeholder="验证码" type="text" autocomplete="off">-->
+					<!--</td>-->
+				<!--</tr>-->
+				<div id="code"></div>
+
+			</table>
+			
+			<input id="key" name="key" type="hidden">
+			<hr class="hr15">
+			<!--<button style="width: 100%;" type="submit"-->
+				<!--onclick="login(this)">短信登陆</button>-->
+			<hr class="hr20">
+			<a href="login.html">用户名密码登陆</a>
+			<span id="info" style="color: red"></span>
+		</form>
+
+
+	</div>
+
+</body>
+<script src="js/constant.js"></script>
+<script src="js/libs/jquery-3.3.1.min.js"></script>
+<script src="js/jq.js"></script>
+<script type="text/javascript">
+	if (top != self) {
+		parent.location.href = loginPage;
+	}
+
+	var access_token = localStorage.getItem("access_token");
+	if (access_token != null && access_token.trim().length != 0) {
+		$.ajax({
+			type : 'get',
+			url : domainName + '/api-u/users/current?access_token=' + access_token,
+			success : function(data) {
+				location.href = 'index.html';
+			},
+			error : function(xhr, textStatus, errorThrown) {
+				if (xhr.status == 401) {
+					localStorage.removeItem("access_token");
+				}
+			}
+		});
+	}else {
+        var toUrl = domainName + "/api-b/pages/wechat/index.html";
+        var url = domainName + "/api-u/wechat/app1?toUrl=" + encodeURIComponent(toUrl);
+        $('#code').qrcode(url); //任意字符串
+	}
+
+</script>
+</html>

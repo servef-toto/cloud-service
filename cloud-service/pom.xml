@@ -13,12 +13,12 @@
 		<!--<module>oauth-center</module>-->
 		<!--<module>monitor-center</module>-->
 		<!--<module>user-center</module>-->
-		<!--<module>api-model</module>-->
+		<module>api-model</module>
 		<module>commons</module>
-		<!--<module>manage-backend</module>-->
+		<module>manage-backend</module>
 		<!--<module>log-center</module>-->
-		<!--<module>log-starter</module>-->
-		<!--<module>file-center</module>-->
+		<module>log-starter</module>
+		<!--<module>file-center</mod ule>-->
 		<!--<module>notification-center</module>-->
 	</modules>
 

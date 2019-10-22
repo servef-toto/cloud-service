@@ -1,0 +1,19 @@
+package com.cloud.backend;
+
+import com.cloud.common.utils.AppUserUtil;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+/**
+ * 管理后台
+ */
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ManageBackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ManageBackendApplication.class, args);
+	}
+
+}
