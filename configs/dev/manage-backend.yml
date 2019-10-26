@@ -67,7 +67,7 @@ my:
   swagger:
     groupName: "manage-backend接口文档"
     title: "manage-backend接口文档"
-    version: "1.0"
+    version: "2.0"
     contact:
       name: "luu-这个ID叫夏天"
       url: ""
