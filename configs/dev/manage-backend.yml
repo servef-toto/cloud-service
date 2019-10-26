@@ -47,7 +47,7 @@ spring:
                             #如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
                             #如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用
 
-   # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
   zipkin:
     base-url: http://localhost:9411  # zipkin服务端地址
     enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
@@ -67,7 +67,7 @@ my:
   swagger:
     groupName: "manage-backend接口文档"
     title: "manage-backend接口文档"
-    version: "2.0"
+    version: "1.0"
     contact:
       name: "luu-这个ID叫夏天"
       url: ""
