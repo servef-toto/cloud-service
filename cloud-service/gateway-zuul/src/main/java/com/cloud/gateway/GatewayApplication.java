@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *
  */
 @EnableFeignClients
-@EnableZuulProxy
+@EnableZuulProxy // @EnableZuulProxy注解开启Zuul的API网关服务
 @EnableDiscoveryClient
 @SpringBootApplication
 public class GatewayApplication {

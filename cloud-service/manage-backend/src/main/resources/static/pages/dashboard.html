@@ -32,19 +32,19 @@
                                 <td>1</td>
                                 <td>register-center</td>
                                 <td>注册中心</td>
-                                <td>Spring Cloud Eureka实现</td>
+                                <td>页面地址：http://local.register.com:8761，直接访问注册中心地址，Spring Cloud Eureka实现</td>
                             </tr>
                             <tr>
                                 <td>2</td>
                                 <td>config-center</td>
                                 <td>配置中心</td>
-                                <td>Spring Cloud Config实现，配置文件支持本地或者git</td>
+                                <td>页面地址：https://github.com/servef-toto/cloud-service/tree/master/configs，Spring Cloud Config实现，配置文件支持本地或者git，如果修改直接修改对应配置文件。并且通过Spring Cloud Bus来实时更新总线上的属性配置了，所有客户端pom.xml增加spring-cloud-starter-bus-amqp模块（注意spring-boot-starter-actuator模块也是必须的）。</td>
                             </tr>
                             <tr>
                                 <td>3</td>
                                 <td>user-center</td>
                                 <td>用户中心</td>
-                                <td>用户、角色、权限、绑定手机号、微信网页公众号授权</td>
+                                <td>页面地址：pages/user/userList.html，用户、角色、权限、绑定手机号、微信网页公众号授权</td>
                             </tr>
                             <tr>
                                 <td>4</td>
@@ -80,7 +80,7 @@
                                 <td>9</td>
                                 <td>monitor-center</td>
                                 <td>监控中心</td>
-                                <td>Spring Boot Admin实现</td>
+                                <td>页面地址：http://local.monitor.com:9001，Spring Boot Admin实现，Spring Boot Admin提供的管理页面，用于服务监控</td>
                             </tr>
                             <tr>
                                 <td>10</td>
@@ -142,7 +142,7 @@
                         <span class="layui-badge-dot"></span>监控中心：监控微服务信息
                     </p>
                     <p>
-                    <span class="layui-badge-dot"></span>接口swagger文档
+                    <span class="layui-badge-dot"></span>接口swagger文档，swagger文档查看直接访问服务实例名 + /swagger-ui.html，也可以通过网关访问不同实例的API文档
                     </p>
                     <p>
                     <span class="layui-badge-dot"></span>ip黑名单：查询、添加、删除ip黑名单

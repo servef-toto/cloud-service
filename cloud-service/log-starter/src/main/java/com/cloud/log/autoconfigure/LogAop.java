@@ -32,8 +32,6 @@ public class LogAop {
     private static final Logger logger = LoggerFactory.getLogger(LogAop.class);
 
     @Autowired
-    LogMqClient logMqClient;
-    @Autowired
     private AmqpTemplate amqpTemplate;
 
     /**

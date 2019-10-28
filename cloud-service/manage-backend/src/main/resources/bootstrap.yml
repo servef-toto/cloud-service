@@ -12,10 +12,24 @@ spring:
       fail-fast: true
       label: master # 分支，对应{label}部分，如果不设置分支的话，则默认使用配置中心的默认分支
 
+      # 读取配置重试配置,在pom.xml中增加spring.retry和spring-boot-starter-aop依赖：并且可以配置重试次数,先确保已经配置了spring.cloud.config.failFast=true
+      retry:
+        multiplier: 1.1  # multiplier: 下一个间隔的乘数，默认是1.1，所以当最初间隔式1000毫秒时，下一次失败后的间隔为1100毫秒。
+        initial-interval: 1000  # 初始重试间隔时间（单位为毫秒），默认是1000毫秒。
+        max-interval: 2000 # 最大间隔时间，默认是2000毫秒。
+        max-attempts: 6 # 最大重试次数，默认为6次。
+
+    # spring cloud bus
+    bus:
+      enabled: true  # 开启spring cloud bus 消息总线功能
+      trace:
+        enabled: true #开启消息跟踪
+
 server:
-  port: 9999   # 这里配置成0，启动时，项目会随机一个端口号
-  servlet:
-    context-path: /api-b/
+  port: 0   # 这里配置成0，启动时，项目会随机一个端口号
+#  servlet:
+#    context-path: /api-b/
+
 eureka:
   client:
     serviceUrl:
@@ -35,7 +49,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "*"    #暴露actuator的所有端点,|开放这个更新接口,include: bus-refresh 刷新配置的端口
   endpoint:
     health:
-      show-details: always
+      show-details: always #health endpoint是否必须显示全部细节。默认情况下, /actuator/health 是公开的，并且不显示细节

@@ -18,8 +18,10 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 异常处理
- * @author admin008
+ * 统一异常处理
+ * @ControllerAdvice是组件注解，他使得其实现类能够被classpath扫描自动发现，类似于配置注解configration能被springcontext发现
+ * 注解@ControllerAdvice的类可以拥有@ExceptionHandler, @InitBinder或 @ModelAttribute注解的方法.
+ * 并且这些方法会被应用到控制器类层次的所有@RequestMapping方法上。
  */
 @Slf4j
 @RestControllerAdvice
@@ -27,7 +29,6 @@ public class ExceptionHandlerAdvice {
 
 	/**
 	 * feignClient调用异常，将服务的异常和http状态码解析
-	 *
 	 * 不处理的话将会抛出500服务端异常，这里只是将下游服务的原始http状态码还原。
 	 *
 	 * @param exception
@@ -66,6 +67,12 @@ public class ExceptionHandlerAdvice {
 		return data;
 	}
 
+	/**
+	 * 捕捉 ClientException 异常（IllegalArgumentException）
+	 * 不处理的话将会抛出500服务端异常
+	 * @param exception
+	 * @return
+	 */
 	@ExceptionHandler({ IllegalArgumentException.class })
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<String, Object> badRequestException(IllegalArgumentException exception) {
@@ -76,6 +83,12 @@ public class ExceptionHandlerAdvice {
 		return data;
 	}
 
+	/**
+	 * 捕捉 ClientException 异常（服务的异常和http状态码解析）
+	 * 不处理的话将会抛出500服务端异常
+	 * @param throwable
+	 * @return
+	 */
 	@ExceptionHandler({ClientException.class, Throwable.class})
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, Object> serverException(Throwable throwable) {

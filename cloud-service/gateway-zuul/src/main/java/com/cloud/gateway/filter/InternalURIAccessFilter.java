@@ -22,7 +22,12 @@ import com.netflix.zuul.context.RequestContext;
  */
 @Component
 public class InternalURIAccessFilter extends ZuulFilter {
-
+	/**
+	 * run：过滤器的具体逻辑。
+	 * 这里我们通过使用requestContext.setResponseBody(body)对返回的body内容进行编辑返回提示信息。
+	 * 然后也通过requestContext.setSendZuulResponse(false)令zuul过滤该请求，不对其进行路由，
+	 * @return
+	 */
 	@Override
 	public Object run() {
 		RequestContext requestContext = RequestContext.getCurrentContext();
@@ -33,6 +38,14 @@ public class InternalURIAccessFilter extends ZuulFilter {
 		return null;
 	}
 
+	/**
+	 * shouldFilter：判断该过滤器是否需要被执行。
+	 * true： 过滤器对请求都生效,就是执行完当前过滤器,才会继续往下执行
+	 * false: 过滤器对请求不生效,就是之间往下执行，不执行当前过滤器
+	 *
+	 * 这个对请求url进行校验，url中能匹配*-anon/internal* 说明不能被外网访问，不往下进行路由
+	 * @return
+	 */
 	@Override
 	public boolean shouldFilter() {
 		RequestContext requestContext = RequestContext.getCurrentContext();
@@ -41,11 +54,19 @@ public class InternalURIAccessFilter extends ZuulFilter {
 		return PatternMatchUtils.simpleMatch("*-anon/internal*", request.getRequestURI());
 	}
 
+	/**
+	 * filterOrder：过滤器的执行顺序。当请求在一个阶段中存在多个过滤器时，需要根据该方法返回都值来依次执行。
+	 * @return
+	 */
 	@Override
 	public int filterOrder() {
 		return 0;
 	}
 
+	/**
+	 * filterType：过滤器都类型，它决定过滤器在请求都哪一个生命周期中执行。这里定义为pre，代表会在请求被路由之前执行。
+	 * @return
+	 */
 	@Override
 	public String filterType() {
 		return FilterConstants.PRE_TYPE;

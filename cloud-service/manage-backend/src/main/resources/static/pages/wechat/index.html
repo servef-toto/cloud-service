@@ -16,15 +16,18 @@
 <script type="text/javascript" src="../../js/libs/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="../../js/common.js"></script>
 <script type="text/javascript">
+    // localStorage.removeItem("access_token");
     var access_token = localStorage.getItem("access_token");
     if (access_token != null && access_token.trim().length != 0) {
         showUserInfo(access_token);
     } else {
         var openid = getUrlParam("openid");
         var toUrl = domainName + "/api-b/pages/wechat/index.html";
-        if (openid == null || openid == "") {// 跳去微信授权
+        if (openid == null || openid == "") {
+            // 跳去微信授权：第一步请求CODE：实际调用https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
             window.location.href = domainName + "/api-u/wechat/app1?toUrl=" + encodeURIComponent(toUrl);
         } else {
+            //已经获取过用户信息
             var hasUser = getUrlParam("hasUser");
             var tempCode = getUrlParam("tempCode");
             var nickname = getUrlParam("nickname");

@@ -1,13 +1,27 @@
+# 日志配置
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.cloud: debug # 级别控制，com.cloud下
   file: logs/${spring.application.name}.log
+
 spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysql57.rdsmhsk0a16udki.rds.gz.baidubce.com:3306/luu_notification_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: luuroot
+    password: root0319
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-test-query: SELECT 1
+
+  # redis配置
   redis:
     host: local.redis.com
     port: 6379
-    password:
+    password: 1
     timeout: 10s
     lettuce:
       pool:
@@ -15,41 +29,40 @@ spring:
         max-idle: 8
         max-active: 8
         max-wait: -1ms
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://local.mysql.com:3306/cloud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    username: root
-    password: root
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      connection-test-query: SELECT 1
+
+  # rabbit配置
   rabbitmq:
     host: local.rabbitmq.com
     port: 5672
     username: guest
     password: guest
     virtual-host: /
+
+  # mvc 的配置
   mvc:
     servlet:
-      load-on-startup: 1
+      load-on-startup: 1 # servlet的启动优先级
+  # mvc aop 切面编程的配置
   aop:
-    proxy-target-class: true
+    proxy-target-class: true #proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+                            #如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+                            #如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用
+
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
   zipkin:
-    base-url: http://localhost:9411
-    enabled: true
+    base-url: http://localhost:9411  # zipkin服务端地址
+    enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
     sender:
-      type: web
+      type: web  # 表示以http的形式上传日志到zipkin服务
+
+#mybatis 配置
 mybatis:
-  type-aliases-package: com.cloud.notification.model
-  mapper-locations: classpath:/mybatis-mappers/*
+  type-aliases-package: com.cloud.notification.model #别名包映射地址
+  mapper-locations: classpath:/mybatis-mappers/* #映射文件扫描地址
   configuration:
     mapUnderscoreToCamelCase: true
-security:
-  oauth2:
-    resource:
-      user-info-uri: http://local.gateway.com:8080/api-o/user-me
-      prefer-token-info: false
+
+# 阿里云短信配置（暂时未使用）
 aliyun:
   accessKeyId: xxx
   accessKeySecret: xxx
@@ -57,6 +70,26 @@ aliyun:
     name1: xxx
   template:
     code1: xxx
+# 发送短信自定义配置
 sms:
   expire-minute: 15
   day-count: 30
+
+
+# swagger 信息自定义配置，具体需要参数可以看com.cloud.backend.config.SwaggerConfig
+my:
+  swagger:
+    groupName: "notification-center接口文档"
+    title: "notification-center接口文档"
+    version: "1.0"
+    contact:
+      name: "luu-这个ID叫夏天"
+      url: ""
+      email: "1073435406@qq.com"
+
+
+#security:
+#  oauth2:
+#    resource:
+#      user-info-uri: http://local.gateway.com:8080/api-o/user-me
+#      prefer-token-info: false
