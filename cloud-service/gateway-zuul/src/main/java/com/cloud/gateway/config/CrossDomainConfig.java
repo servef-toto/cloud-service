@@ -7,7 +7,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * 跨域配置-----只需要在网关层配置，别的微服务不需要配置跨域
+ * 跨域配置-只需要在网关层配置，别的微服务不需要配置跨域
  * 页面访问域名和后端接口地址的域名不一致时，会先发起一个OPTIONS的试探请求
  * 如果不设置跨域的话，js将无法正确访问接口，域名一致的话，不存在这个问题
  *

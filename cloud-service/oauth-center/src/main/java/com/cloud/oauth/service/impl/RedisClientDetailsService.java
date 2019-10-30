@@ -111,6 +111,7 @@ public class RedisClientDetailsService extends JdbcClientDetailsService {
             return;
         }
 
+        //在Redis中，哈希类型是指键值本身又是一个键值对结构，形如：value={{field1,value1},{field2,value2},{fieldN，valueN}},
         list.parallelStream().forEach(client -> {
             stringRedisTemplate.boundHashOps(CACHE_CLIENT_KEY).put(client.getClientId(), JSONObject.toJSONString(client));
         });

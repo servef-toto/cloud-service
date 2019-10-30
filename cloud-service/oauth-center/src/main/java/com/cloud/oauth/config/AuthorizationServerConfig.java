@@ -34,6 +34,15 @@ import java.util.Map;
 /**
  * 资源服务器配置
  * @EnableAuthorizationServer 开启授权服务器
+ *
+ * 配置：
+ * AuthorizationServerConfigurerAdapter 类中3个不同的configure方法分别
+     * configure(ClientDetailsServiceConfigurer clients)
+           * 用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息
+     * configure(AuthorizationServerEndpointsConfigurer endpoints)
+           * 用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)，还有token的存储方式(tokenStore)
+     * configure(AuthorizationServerSecurityConfigurer security)
+           * 用来配置令牌端点(Token Endpoint)的安全约束
  */
 @Configuration
 @EnableAuthorizationServer
@@ -86,21 +95,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      *  用来配置授权（authorization）
      *  以及令牌（token）的访问端点
      *  和令牌服务(token services)
+     *  还有token的存储方式(tokenStore)
+     *
+     *
+     *  配置授权服务一个比较重要的方面就是提供一个授权码给一个OAuth客户端（通过 authorization_code 授权类型），
+     *  一个授权码的获取是OAuth客户端跳转到一个授权页面，然后通过验证授权之后服务器重定向到OAuth客户端，并且在重定向连接中附带返回一个授权码。
      * @param endpoints
      * @throws Exception
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        //认证管理器，当你选择了资源所有者密码（password）授权类型的时候，请设置这个属性注入一个 AuthenticationManager 对象
+        ////启用oauth2管理，认证管理器，当你选择了资源所有者密码（password）授权类型的时候，
+        // 请设置这个属性注入一个 AuthenticationManager 对象，不配做密码模式下报错Unsupported grant type: password
         endpoints.authenticationManager(this.authenticationManager);
 
-        //令牌服务（token）的配置
+        //令牌服务（token）的存储方式(tokenStore)
         endpoints.tokenStore(tokenStore());
 
-        // 授权码模式下，code存储-redis  authorizationCodeServices：这个属性是用来设置授权码服务的（即 AuthorizationCodeServices 的实例对象），主要用于 "authorization_code" 授权码类型模式。
+        // 配置授权（authorization）,授权码模式下，code存储-redis  authorizationCodeServices：这个属性是用来设置授权码服务的（即 AuthorizationCodeServices 的实例对象），主要用于 "authorization_code" 授权码类型模式。
         endpoints.authorizationCodeServices(redisAuthorizationCodeServices);
 
-        //
         if (storeWithJwt) {
             // 配置JwtAccessToken转换器：AccessToken转换器-定义token的生成方式，这里使用JWT生成token，对称加密只需要加入key等其他信息（自定义）。
             // 如果采用非对称加密，则需要服务器端先生成公钥和密钥，客户端访问带上公钥进行校验
@@ -114,10 +128,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return accessToken;
             });
         }
+
+        // refresh_token需要userDetailsService
+//        endpoints.reuseRefreshTokens(false).userDetailsService(userDetailsService);
+//        endpoints.userDetailsService(userDetailsService);//若无，refresh_token会有UserDetailsService is required错误
     }
     /**
      * token 令牌存储实现-token存放位置:jwt/redis
-     * 具体看实现
+     * tokenStore通常情况为自定义实现，一般放置在缓存或者数据库中。此处可以利用自定义tokenStore来实现多种需求，如：
+     *     同已用户每次获取token，获取到的都是同一个token，只有token失效后才会获取新token。
+     *     同一用户每次获取token都生成一个完成周期的token并且保证每次生成的token都能够使用（多点登录）。
+     *     同一用户每次获取token都保证只有最后一个token能够使用，之前的token都设为无效（单点token）。
      */
     @Bean
     public TokenStore tokenStore() {
@@ -125,6 +146,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         if (storeWithJwt) {
             return new JwtTokenStore(accessTokenConverter());
         }
+
         RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
         // 解决同一username每次登陆access_token都相同的问题
         redisTokenStore.setAuthenticationKeyGenerator(new RandomAuthenticationKeyGenerator());
@@ -167,7 +189,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /**
      * 将当前用户信息追加到登陆后返回的json数据里<br>
      * 通过参数access_token.add-userinfo控制<br>
-     * 2018.07.13
      *
      * @param accessToken
      * @param authentication
@@ -204,7 +225,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //默认是不支持表单提交，这里修改提交权限,允许表单形式的认证
         security.allowFormAuthenticationForClients();
     }
-
 
 
 

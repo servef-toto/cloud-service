@@ -36,7 +36,7 @@ zuul:
 
   ignored-services: '*'   # zuul将对所有的服务都不自动创建路由规则。
                         #在这种情况下，我们就要在配置文件中为需要路由的服务添加路由规则（可以使用path与serviceId组合的配置方式，也可以使用更简洁的zuul.routes.<serviceId>=<path>配置方式），只有在配置文件中出现的映射规则会被创建路由，而从Eureka中获取的其他服务，zuul将不会为他们创建路由规则。
-  sensitiveHeaders:  # sensitiveHeaders过滤客户端附带的headers，如：sensitiveHeaders: X-ABC ,如果在发请求时带了X-ABC，那么X-ABC不会往下游服务传递
+  sensitiveHeaders: Cookie,Set-Cookie # sensitiveHeaders过滤客户端附带的headers，如：sensitiveHeaders: X-ABC ,如果在发请求时带了X-ABC，那么X-ABC不会往下游服务传递
                      #这就是cookie与头信息的问题
                      # 默认情况下，spring cloud zuul在请求路由时，会过滤掉http请求头信息中一些敏感信息，防止它们被传递到下游的外部服务器。
                      # 默认的敏感头信息通过zuul.sensitiveHeaders参数定义，默认包括cookie,set-Cookie,authorization三个属性。

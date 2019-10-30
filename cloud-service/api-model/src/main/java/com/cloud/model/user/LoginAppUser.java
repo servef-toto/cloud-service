@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * spring security当前登录对象
+ * 自定义spring security当前登录对象
  */
 @Getter
 @Setter

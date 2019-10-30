@@ -6,7 +6,6 @@ import java.util.Set;
 
 /**
  * 需要放开权限的url
- *
  */
 public final class PermitAllUrl {
 

@@ -83,8 +83,11 @@ file:
     domain: https://xxx
 
 
-#security:
-#  oauth2:
-#    resource:
-#      user-info-uri: http://local.gateway.com:8080/api-o/user-me # 配置userinfo的url地址
-#      prefer-token-info: false # 是否使用token info，默认为true
+## 认证鉴权的配置，可以获取用户的信息和权限信息
+#security.oauth2.resource.user-info-uri用于获取当前token的用户信息，
+#配置security.oauth2.client的相关信息以及clientId、client-secret等信息要和service-auth中的配置一一对应。
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://local.gateway.com:8080/api-o/user-me # 配置userinfo的url地址
+      prefer-token-info: false # 是否使用token info，默认为true

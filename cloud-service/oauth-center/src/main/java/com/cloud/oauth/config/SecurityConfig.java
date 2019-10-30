@@ -14,10 +14,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
- * spring security配置
+ * spring security配置  主要是用户认证的校验
  *
- * 主要是用户认证的校验
- * 
+ * 配置：
+ * WebSecurityConfigurerAdapter
+	 * configure(HttpSecurity http) httpSecurity中配置所有请求的安全验证
+	 * 注入Bean UserDetailsService
+	 * 注入Bean AuthenticationManager 用来做验证
+	 * 注入Bean PasswordEncoder
+ *
  */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -35,35 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	/**
-	 * 全局用户信息<br>
-	 * 方法上的注解@Autowired的意思是，方法的参数的值是从spring容器中获取的<br>
-	 * 即参数AuthenticationManagerBuilder是spring中的一个Bean
-	 *
-	 * @param auth 认证管理
-	 * @throws Exception 用户认证异常信息
-	 */
-	@Autowired
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-	}
-
-	/**
-	 * 认证管理
-	 * 
-	 * @return 认证管理对象
-	 * @throws Exception
-	 *             认证异常信息
-	 */
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
-
-	/**
 	 * http安全配置
-	 * 
 	 * @param http
 	 *            http安全对象
 	 * @throws Exception
@@ -80,10 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//"/db/**" 路径为 ADMIN 和 DBA 角色同时拥有时可访问
 //				.antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
 
-
-
 				// 放开权限的url,不需要登录就可访问
 				.antMatchers(PermitAllUrl.permitAllUrl()).permitAll()
+
 				//未匹配路径为登陆可访问
 				.anyRequest().authenticated()
 				.and()
@@ -99,6 +75,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//在使用无状态认证时，需要关闭CSRF.
 
 				.and().csrf().disable();// 使用无状态认证时，需要关闭CSRF
+	}
+
+	/**
+	 * 全局用户信息<br>
+	 * 方法上的注解@Autowired的意思是，方法的参数的值是从spring容器中获取的<br>
+	 * 即参数AuthenticationManagerBuilder是spring中的一个Bean
+	 *
+	 * @param auth 认证管理
+	 * @throws Exception 用户认证异常信息
+	 */
+	@Autowired
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+	}
+
+	/**
+	 * 认证管理:不定义没有password grant_type
+	 *
+	 * @return 认证管理对象
+	 * @throws Exception
+	 *             认证异常信息
+	 */
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 
