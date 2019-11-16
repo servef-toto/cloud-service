@@ -1,12 +1,13 @@
 package com.cloud.user.config;
 
 import com.cloud.log.autoconfigure.LogAop;
-import io.netty.channel.ConnectTimeoutException;
+//import io.netty.channel.ConnectTimeoutException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;

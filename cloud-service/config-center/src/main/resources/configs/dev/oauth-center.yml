@@ -9,7 +9,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql57.rdsmhsk0a16udki.rds.gz.baidubce.com:3306/luu_oauth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_oauth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     username: luuroot
     password: root0319
     hikari:

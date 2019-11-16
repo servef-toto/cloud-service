@@ -12,8 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-//import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 
 public class AppUserUtil {
@@ -39,23 +40,23 @@ public class AppUserUtil {
             appUser.setSysRoles(roleSet);
             return appUser;
         }
-//        if (authentication instanceof OAuth2Authentication) {
-//            OAuth2Authentication oAuth2Auth = (OAuth2Authentication) authentication;
-//            authentication = oAuth2Auth.getUserAuthentication();
-//
-//            if (authentication instanceof UsernamePasswordAuthenticationToken) {
-//                UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
-//                Object principal = authentication.getPrincipal();
-//                if (principal instanceof LoginAppUser) {
-//                    return (LoginAppUser) principal;
-//                }
-//
-//                Map map = (Map) authenticationToken.getDetails();
-//                map = (Map) map.get("principal");
-//
-//                return JSONObject.parseObject(JSONObject.toJSONString(map), LoginAppUser.class);
-//            }
-//        }
+        if (authentication instanceof OAuth2Authentication) {
+            OAuth2Authentication oAuth2Auth = (OAuth2Authentication) authentication;
+            authentication = oAuth2Auth.getUserAuthentication();
+
+            if (authentication instanceof UsernamePasswordAuthenticationToken) {
+                UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof LoginAppUser) {
+                    return (LoginAppUser) principal;
+                }
+
+                Map map = (Map) authenticationToken.getDetails();
+                map = (Map) map.get("principal");
+
+                return JSONObject.parseObject(JSONObject.toJSONString(map), LoginAppUser.class);
+            }
+        }
 
         return null;
     }
