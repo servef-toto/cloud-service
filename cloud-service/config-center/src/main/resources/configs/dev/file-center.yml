@@ -71,7 +71,7 @@ my:
 #如d:/localFile/aaa.png用url访问就是  http://api.gateway.com:8080/api-f/statics/aaa.png
 file:
   local:
-    path: d:/localFile
+    path: /opt/data/localFile
     prefix: /statics
     urlPrefix: http://api.gateway.com:8080/api-f${file.local.prefix}
   # 如要上传图片到阿里云，这里需要配置你的阿里云对象存储OSS相关配置
