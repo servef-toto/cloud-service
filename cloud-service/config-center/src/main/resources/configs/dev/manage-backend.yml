@@ -10,7 +10,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_manage_backend?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    username: luuroot
+    username: root
     password: root0319
     hikari:
       minimum-idle: 5
