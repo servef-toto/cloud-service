@@ -22,7 +22,7 @@ eureka:
     prefer-ip-address: true   # 该配置为true的话，是用ip注册，否则是主机名注册，强烈建议配置为true
     instance-id: ${spring.application.name}:${server.port} #eureka实例的id
     ip-address: 106.12.158.157  #设置外网IP号
-    non-secure-port: 8761 #设置外网端口号,设置不安全端口号
+    non-secure-port: ${server.port} #设置外网端口号,设置不安全端口号
     non-secure-port-enabled: true #开启不安全通信的端口，就是使用http进行通信
   server:
     enable-self-preservation: false #是否开启自我保护模式，默认为true 本机调试才不会报错

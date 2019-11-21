@@ -45,7 +45,7 @@ eureka:
     prefer-ip-address: true #使用 IP 地址进行服务注册。默认情况下，Eureka 使用 hostname 进行服务注册，以及服务信息的显示，那如果我们使用 IP 地址的方式则配置prefer-ip-address: true
     instance-id: ${spring.application.name}:${random.int}  # 因为我们是随机端口号，我们这里用了随机数字来显示
     ip-address: 106.12.158.157  #设置外网IP号
-    non-secure-port: 8761 #设置外网端口号,设置不安全端口号
+    non-secure-port: ${server.port} #设置外网端口号,设置不安全端口号
     non-secure-port-enabled: true #开启不安全通信的端口，就是使用http进行通信
 
 
