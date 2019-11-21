@@ -1,24 +1,21 @@
-package com.cloud.user.service.impl;
+package com.cloud.user.service.merPak.impl;
 
 import com.cloud.model.user.model.MerInvetoryEntity;
 import com.cloud.user.config.RedisLock;
 import com.cloud.user.dao.StockDao;
 import com.cloud.user.listen.queue.RequestQueue;
-import com.cloud.user.service.IStockCallback;
-import com.cloud.user.service.StockService;
+import com.cloud.user.service.merPak.IStockCallback;
+import com.cloud.user.service.merPak.StockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.lettuce.LettuceConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 

@@ -1,4 +1,4 @@
-package com.cloud.user.service;
+package com.cloud.user.service.merPak;
 
 import com.cloud.model.user.model.MerInvetoryEntity;
 

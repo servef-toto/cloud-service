@@ -1,8 +1,8 @@
-package com.cloud.user.controller;
+package com.cloud.user.controller.merPak;
 
 import com.cloud.model.user.model.MerInvetoryEntity;
 import com.cloud.user.dao.StockDao;
-import com.cloud.user.service.StockService;
+import com.cloud.user.service.merPak.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

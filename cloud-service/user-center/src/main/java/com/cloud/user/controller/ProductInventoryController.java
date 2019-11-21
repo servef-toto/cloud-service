@@ -5,7 +5,7 @@ import com.cloud.user.listen.Response;
 import com.cloud.user.listen.queue.ProductInventoryCacheRefreshRequest;
 import com.cloud.user.listen.queue.ProductInventoryDBUpdateRequest;
 import com.cloud.user.listen.queue.Request;
-import com.cloud.user.service.ProductInventoryService;
+import com.cloud.user.service.merPak.ProductInventoryService;
 import com.cloud.user.service.RequestAsyncProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

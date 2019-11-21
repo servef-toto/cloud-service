@@ -2,7 +2,7 @@ package com.cloud.user.listen.queue;
 
 import com.cloud.model.user.model.MerInvetoryEntity;
 import com.cloud.user.config.RedisLock;
-import com.cloud.user.service.ProductInventoryService;
+import com.cloud.user.service.merPak.ProductInventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

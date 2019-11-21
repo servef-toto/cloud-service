@@ -1,4 +1,4 @@
-package com.cloud.user.service;
+package com.cloud.user.service.merPak;
 
 /**
  * 初始化库存时调用，从数据库获取库存

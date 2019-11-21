@@ -1,4 +1,6 @@
-package com.cloud.user.service;
+package com.cloud.user.service.merPak;
+
+import com.cloud.user.service.merPak.IStockCallback;
 
 import java.util.List;
 import java.util.Map;
