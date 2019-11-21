@@ -74,19 +74,11 @@
 			<artifactId>log-starter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!--Spring Security 及 Security 的OAuth2 扩展，做为权限认证的处理-->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-oauth2</artifactId>
-		</dependency>
 
-		<!--该jar包不可以使用，否则会造成oauth-center的server.port设置为0的时候，
-		注册到注册中心的oauth-center的元数据中的port也只能为0，拿不到真实的数据。
-		如果要使用该jar包，只能固定server.port，不能使用随机生成port -->
+		<!-- 指明版本，解决redis存储出现的问题：java.lang.NoSuchMethodError: org.springframework.data.redis.connection.RedisConnection.set([B[B)V问题 -->
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
-			<!-- 指明版本，解决redis存储出现的问题：java.lang.NoSuchMethodError: org.springframework.data.redis.connection.RedisConnection.set([B[B)V问题 -->
 			<version>2.3.3.RELEASE</version>
 		</dependency>
 
@@ -105,6 +97,11 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
+		</dependency>
+		<!--Spring Security 及 Security 的OAuth2 扩展，做为权限认证的处理-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-oauth2</artifactId>
 		</dependency>
 	</dependencies>
 

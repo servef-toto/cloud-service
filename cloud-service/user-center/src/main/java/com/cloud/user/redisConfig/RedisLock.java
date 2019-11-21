@@ -182,6 +182,12 @@ public class RedisLock {
         this.timeOut = timeOut;
     }
 
+
+
+
+
+
+
     /**
      * 尝试获取锁 超时返回
      *
@@ -239,6 +245,16 @@ public class RedisLock {
             seleep(10, 50000);
         }
     }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 解锁
@@ -298,6 +314,9 @@ public class RedisLock {
 
         return locked;
     }
+
+
+
 
     /**
      * 重写redisTemplate的set方法

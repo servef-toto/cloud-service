@@ -11,6 +11,14 @@ spring:
     sender:
       type: web  # 表示以http的形式上传日志到zipkin服务
 
+  # rabbit配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
 # 日志配置
 logging:
   level:

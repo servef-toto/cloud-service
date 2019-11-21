@@ -18,6 +18,15 @@
 spring:
   application:
     name: config-center # 注册中心应用名称
+
+  # rabbit配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
   # 配置中心最重要部分
   profiles:
     active: native  # 通过spring.profiles.active这里可以指定配置文件在本地,还是classpath下还是在远程git上面

@@ -11,7 +11,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_oauth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     username: root
-    password: root0319
+    password: root0319@
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
