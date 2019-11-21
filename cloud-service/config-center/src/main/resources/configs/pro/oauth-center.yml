@@ -1,0 +1,92 @@
+# 日志配置
+logging:
+  level:
+    root: info
+    com.cloud: debug # 级别控制，com.cloud下
+  file: logs/${spring.application.name}.log
+
+spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_oauth_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root0319@
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-test-query: SELECT 1
+
+  # rabbitmq的配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+  # redis的配置
+  redis:
+    host: local.redis.com
+    port: 6379
+    password: 1
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+  # mvc 的配置
+  mvc:
+    servlet:
+      load-on-startup: 1 # servlet的启动优先级
+
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
+  zipkin:
+    base-url: http://localhost:9411  # zipkin服务端地址
+    enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
+    sender:
+      type: web  # 表示以http的形式上传日志到zipkin服务
+
+
+# 这里面ribbon和hystrix的超时配置是同时生效的，哪个值小哪个生效，另一个就看不到效果了。
+# 超时配置 ，如果路由方式是serviceId的方式，那么ribbon的生效，如果是url的方式，则zuul.host开头的生效，与zuul.host超时配置相呼应
+# ribbon 和 hystrix 配置
+ribbon:
+  eager-load:
+    enabled: true
+    clients: user-center # 设置启动时就加载好的客户端
+  ReadTimeout: 10000  # 10秒
+  ConnectTimeout: 10000 # 设置连接超时时间  10秒
+# 熔断hystrix配置,default代表默认，如果你想为某个特定的service配熔断超时策略，可以用具体某个服务的service_id
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000 # 熔断超时配置60秒
+
+
+
+# swagger 信息自定义配置，具体需要参数可以看com.cloud.backend.config.SwaggerConfig
+my:
+  swagger:
+    groupName: "oauth-center接口文档"
+    title: "oauth-center接口文档"
+    version: "1.0"
+    contact:
+      name: "luu-这个ID叫夏天"
+      url: ""
+      email: "1073435406@qq.com"
+
+
+# 自定义配置项
+access_token:
+  store-jwt: false  # token是否用jwt,false的话token是默认的uuid，true的话token将采用jwt,具体可看下
+                    #com.cloud.oauth.config.AuthorizationServerConfig里面storeWithJwt
+  jwt-signing-key: xiao@wei@jia@gou=$==+_+%0%:)(:)  #使用jwt时，需要配置这个签名key，具体可看下
+                                                    #com.cloud.oauth.config.AuthorizationServerConfig里面的accessTokenConverter
+  add-userinfo: false

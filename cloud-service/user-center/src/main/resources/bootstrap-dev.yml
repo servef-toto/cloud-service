@@ -1,0 +1,55 @@
+# spring cloud config 配置
+spring:
+  application:
+    name: user-center
+  cloud:
+    config:
+#      uri: http://localhost:9090/ 1：不使用eruka的话，若不指定spring.cloud.uri参数的话，spring cloud config的客户端会默认尝试连接http://localhost:8888。
+      discovery:  # 2:如果使用eruka，# 开启通过服务来访问配置中心，使用 指定配置中心服务名来调用
+        enabled: true
+        serviceId: config-center
+      profile: dev # 对应{profile}部分
+      fail-fast: true
+      label: master # 分支，对应{label}部分，如果不设置分支的话，则默认使用配置中心的默认分支
+
+      # 读取配置重试配置,在pom.xml中增加spring.retry和spring-boot-starter-aop依赖：并且可以配置重试次数,先确保已经配置了spring.cloud.config.failFast=true
+      retry:
+        multiplier: 1.1  # multiplier: 下一个间隔的乘数，默认是1.1，所以当最初间隔式1000毫秒时，下一次失败后的间隔为1100毫秒。
+        initial-interval: 1000  # 初始重试间隔时间（单位为毫秒），默认是1000毫秒。
+        max-interval: 2000 # 最大间隔时间，默认是2000毫秒。
+        max-attempts: 6 # 最大重试次数，默认为6次。
+
+    # spring cloud bus
+    bus:
+      enabled: true  # 开启spring cloud bus 消息总线功能
+      trace:
+        enabled: true #开启消息跟踪
+
+server:
+  port: 0   # 这里配置成0，启动时，项目会随机一个端口号
+#  servlet:
+#    context-path: /api-b/
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://local.register.com:8761/eureka/ # 可以设置为多注册中心
+    registry-fetch-interval-seconds: 5  #表示eureka client间隔多久去拉取服务注册信息，默认为30秒
+  instance:
+    lease-expiration-duration-in-seconds: 60 #表示注册中心至上一次收到client的心跳之后，等待下一次心跳的超时时间，
+                        #在这个时间内若没收到下一次心跳，则将移除该instance。默认为90秒，该值至少应该大于leaseRenewalIntervalInSeconds
+    lease-renewal-interval-in-seconds: 20 #表示eureka client发送心跳给server端的频率。如果在leaseExpirationDurationInSeconds后，
+                        #server端没有收到client的心跳，则将摘除该instance。除此之外，默认30秒
+    prefer-ip-address: true #使用 IP 地址进行服务注册。默认情况下，Eureka 使用 hostname 进行服务注册，以及服务信息的显示，那如果我们使用 IP 地址的方式则配置prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.int}  # 因为我们是随机端口号，我们这里用了随机数字来显示
+
+
+#监控跟踪管理actuator，可以自定义endpoints具体可以百度
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"    #暴露actuator的所有端点,|开放这个更新接口,include: bus-refresh 刷新配置的端口
+  endpoint:
+    health:
+      show-details: always #health endpoint是否必须显示全部细节。默认情况下, /actuator/health 是公开的，并且不显示细节
