@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
-			<version>2.3.3.RELEASE</version>
+			<version>2.3.6.RELEASE</version>
 		</dependency>
 
 		<!--如果因为网络波动等其他间歇性原因导致的问题，直接启动失败似乎代价有点高。所以，-->
