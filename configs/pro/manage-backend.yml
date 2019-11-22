@@ -9,9 +9,9 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql57.rdsmhsk0a16udki.rds.gz.baidubce.com:3306/luu_manage_backend?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    username: luuroot
-    password: root0319
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_manage_backend?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root0319@
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -47,7 +47,7 @@ spring:
                             #如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
                             #如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用
 
-   # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
   zipkin:
     base-url: http://localhost:9411  # zipkin服务端地址
     enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
@@ -67,15 +67,18 @@ my:
   swagger:
     groupName: "manage-backend接口文档"
     title: "manage-backend接口文档"
-    version: "2.0"
+    version: "1.0"
     contact:
       name: "luu-这个ID叫夏天"
       url: ""
       email: "1073435406@qq.com"
 
 
-#security:
-#  oauth2:
-#    resource:
-#      user-info-uri: http://local.gateway.com:8080/api-o/user-me
-#      prefer-token-info: false
+## 认证鉴权的配置，可以获取用户的信息和权限信息
+#security.oauth2.resource.user-info-uri用于获取当前token的用户信息，
+#配置security.oauth2.client的相关信息以及clientId、client-secret等信息要和service-auth中的配置一一对应。
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://106.12.158.157:8080/api-o/user-me
+      prefer-token-info: false

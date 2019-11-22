@@ -10,9 +10,9 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql57.rdsmhsk0a16udki.rds.gz.baidubce.com:3306/luu_file_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    username: luuroot
-    password: root0319
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_file_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root0319@
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -47,7 +47,7 @@ spring:
 
 #mybatis 配置
 mybatis:
-  type-aliases-package: com.cloud.backend.model,com.cloud.model.mail #别名包映射地址
+  type-aliases-package: com.cloud.file.model #别名包映射地址
   mapper-locations: classpath:/mybatis-mappers/* #映射文件扫描地址
   configuration:
     mapUnderscoreToCamelCase: true
@@ -71,7 +71,7 @@ my:
 #如d:/localFile/aaa.png用url访问就是  http://api.gateway.com:8080/api-f/statics/aaa.png
 file:
   local:
-    path: d:/localFile
+    path: /opt/data/localFile
     prefix: /statics
     urlPrefix: http://api.gateway.com:8080/api-f${file.local.prefix}
   # 如要上传图片到阿里云，这里需要配置你的阿里云对象存储OSS相关配置
@@ -83,8 +83,11 @@ file:
     domain: https://xxx
 
 
-#security:
-#  oauth2:
-#    resource:
-#      user-info-uri: http://local.gateway.com:8080/api-o/user-me # 配置userinfo的url地址
-#      prefer-token-info: false # 是否使用token info，默认为true
+## 认证鉴权的配置，可以获取用户的信息和权限信息
+#security.oauth2.resource.user-info-uri用于获取当前token的用户信息，
+#配置security.oauth2.client的相关信息以及clientId、client-secret等信息要和service-auth中的配置一一对应。
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://local.gateway.com:8080/api-o/user-me # 配置userinfo的url地址
+      prefer-token-info: false # 是否使用token info，默认为true

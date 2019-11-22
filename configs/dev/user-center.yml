@@ -1,17 +1,17 @@
-# 日志级别以及日志文件输出位置
+# 日志配置
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.cloud: debug # 级别控制，com.cloud下
   file: logs/${spring.application.name}.log
 
 spring:
-  # 数据库配置
+  # 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://local.mysql.com:3306/cloud?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_user_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     username: root
-    password: root
+    password: root0319@
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -29,66 +29,79 @@ spring:
   redis:
     host: local.redis.com
     port: 6379
-    password:
+    password: 1
     timeout: 10s
-    lettuce:
+    jedis:
       pool:
         min-idle: 0
-        max-idle: 8
-        max-active: 8
-        max-wait: -1ms
+        max-idle: 300 # 控制一个pool最多有多少个状态为idle的jedis实例
+        max-active: 300   #连接池最大空闲数,控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态就成exhausted了
+        max-wait: -1  #连接池最大等待时间,表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException
 
-  # springmvc的配置，springmvc的dispachatservlet在系统启动的时候就加载出来
+  # mvc 的配置
   mvc:
     servlet:
-      load-on-startup: 1
-  # aop代理的配置
+      load-on-startup: 1 # servlet的启动优先级
+  # mvc aop 切面编程的配置
   aop:
-    proxy-target-class: true
+    proxy-target-class: true #proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+                            #如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+                            #如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用
 
-  # zipkin请求链路的跟踪管理的配置,增加Zipkin Server的配置信息
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
   zipkin:
-    base-url: http://localhost:9411
-    enabled: true
+    base-url: http://localhost:9411  # zipkin服务端地址
+    enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
     sender:
-      type: web
+      type: web  # 表示以http的形式上传日志到zipkin服务
 
 # mybatis的配置
 mybatis:
-  type-aliases-package: com.cloud.model.user  #
-  mapper-locations: classpath:/mybatis-mappers/*
+  type-aliases-package: com.cloud.model.user  # 别名包映射地址
+  mapper-locations: classpath:/mybatis-mappers/* # 映射文件扫描地址
   configuration:
     mapUnderscoreToCamelCase: true
 
-# 认证鉴权的配置，可以获取用户的信息和权限信息
-security:
-  oauth2:
-    resource:
-      user-info-uri: http://local.gateway.com:8080/api-o/user-me
-      prefer-token-info: false  # 是否使用token info，默认为tru
-
-
-# 微信公众号配置 详细看下代码com.cloud.user.service.impl.WechatServiceImpl和
-          #cloud-service\manage-backend\src\main\resources\static\pages\wechat\index.html
-wechat:
-  domain: http://api.gateway.com:8080/api-u
-#  domain: http://f6c92912.ngrok.io/api-u
-  infos:
-    app1:
-      appid: wx22cc2e471b5201b8
-      secret: 56453462fa28e4fdf66eebece28ce391
-#    app2:
-#      appid: xxx
-#      secret: xxx
-
-# ribbon 以及 hystrix 的配置
+#这里面ribbon和hystrix的超时配置是同时生效的，哪个值小哪个生效，另一个就看不到效果了。
+# 超时配置 ，如果路由方式是serviceId的方式，那么ribbon的生效，如果是url的方式，则zuul.host开头的生效，与zuul.host超时配置相呼应
 ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 10000
+  ReadTimeout: 10000 # 10秒
+  ConnectTimeout: 10000 # 10秒
+# 熔断hystrix配置,default代表默认，如果你想为某个特定的service配熔断超时策略，可以用具体某个服务的service_id
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 60000 # 熔断超时配置60秒
+
+
+# swagger 信息自定义配置，具体需要参数可以看com.cloud.backend.config.SwaggerConfig
+my:
+  swagger:
+    groupName: "manage-backend接口文档"
+    title: "manage-backend接口文档"
+    version: "1.0"
+    contact:
+      name: "luu-这个ID叫夏天"
+      url: ""
+      email: "1073435406@qq.com"
+
+## 认证鉴权的配置，可以获取用户的信息和权限信息
+#security.oauth2.resource.user-info-uri用于获取当前token的用户信息，
+#配置security.oauth2.client的相关信息以及clientId、client-secret等信息要和service-auth中的配置一一对应。
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://local.gateway.com:8080/api-o/user-me
+      prefer-token-info: false  # 是否使用token info，默认为tru
+
+# 微信公众号配置 详细看下代码com.cloud.user.service.impl.WechatServiceImpl和
+#cloud-service\manage-backend\src\main\resources\static\pages\wechat\index.html
+wechat:
+  domain: http://api.gateway.com:8080/api-u
+  infos:
+    app1:
+      appid: wx22cc2e471b5201b8
+      secret: 56453462fa28e4fdf66eebece28ce391

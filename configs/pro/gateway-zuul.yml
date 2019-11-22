@@ -1,59 +1,101 @@
 spring:
+  # mvc 的配置
   mvc:
     servlet:
-      load-on-startup: 1
+      load-on-startup: 1 # servlet的启动优先级
+
+  # zipkin 链路追踪的配置-HTTP的方式收集，也可以使用消息中间件收集，具体可以百度
   zipkin:
-    base-url: http://localhost:9411
-    enabled: true
+    base-url: http://localhost:9411  # zipkin服务端地址
+    enabled: true # enabled=false则可以关闭跟踪功能，如果在使用rabbit等消息队列发送时，则可以关闭
     sender:
-      type: web
+      type: web  # 表示以http的形式上传日志到zipkin服务
+
+  # rabbit配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+# 日志配置
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.cloud: debug # 级别控制，com.cloud下
   file: logs/${spring.application.name}.log
 
+
+# swagger 信息自定义配置，具体需要参数可以看com.cloud.backend.config.SwaggerConfig
+my:
+  swagger:
+    groupName: "gateway-zuul接口文档"
+    title: "gateway-zuul接口文档"
+    version: "1.0"
+    contact:
+      name: "luu-这个ID叫夏天"
+      url: ""
+      email: "1073435406@qq.com"
+
 # 路由规则
-# sensitiveHeaders过滤客户端附带的headers，如：sensitiveHeaders: X-ABC ,如果在发请求时带了X-ABC，那么X-ABC不会往下游服务传递
 zuul:
-  ignored-services: '*'
-  sensitiveHeaders: 
+  add-host-header: true # 配置解决zuul重定向操作得到正确的处理
+
+  ignored-services: '*'   # zuul将对所有的服务都不自动创建路由规则。
+                        #在这种情况下，我们就要在配置文件中为需要路由的服务添加路由规则（可以使用path与serviceId组合的配置方式，也可以使用更简洁的zuul.routes.<serviceId>=<path>配置方式），只有在配置文件中出现的映射规则会被创建路由，而从Eureka中获取的其他服务，zuul将不会为他们创建路由规则。
+  sensitiveHeaders: Cookie,Set-Cookie # sensitiveHeaders过滤客户端附带的headers，如：sensitiveHeaders: X-ABC ,如果在发请求时带了X-ABC，那么X-ABC不会往下游服务传递
+                     #这就是cookie与头信息的问题
+                     # 默认情况下，spring cloud zuul在请求路由时，会过滤掉http请求头信息中一些敏感信息，防止它们被传递到下游的外部服务器。
+                     # 默认的敏感头信息通过zuul.sensitiveHeaders参数定义，默认包括cookie,set-Cookie,authorization三个属性。
+                     #   所以，我们在开发web项目时常用的cookie在spring cloud zuul网关中默认时不传递的，这就会引发一个常见的问题，
+                     #   如果我们要将使用了spring security，shiro等安全框架构建的web应用通过spring cloud zuul构建的网关来进行路由时，
+                     #   由于cookie信息无法传递，我们的web应用将无法实现登录和鉴权。为了解决这个问题，配置的方法有很多。
+                     # 通过设置全局参数为空来覆盖默认值，具体如下：
+                     # zuul.sensitiveHeaders=    其实还有第二种方法，将具体的服务的sensitiveHeaders（头信息设置为空）
   routes:
-    oauth:
+    oauth-center:               # oauth-center 认证中心服务
       path: /api-o/**
       serviceId: oauth-center
-    api-u:
+    user-center:                # user-center 用户中心服务
       path: /api-u/**
       serviceId: user-center
-    backend:
+    manage-backend:             # manage-backend 后台管理服务
       path: /api-b/**
       serviceId: manage-backend
-    log:
+    log-center:                 # log-center 日志服务
       path: /api-l/**
       serviceId: log-center
-    file:
+    file-center:                # file-center 文件服务
       path: /api-f/**
       serviceId: file-center
-    sms:
+    notification-center:        # notification-center 短信服务
       path: /api-n/**
       serviceId: notification-center
+
+  # Zuul的3种超时问题
+  # 超时配置 ，如果路由方式是serviceId的方式，那么ribbon的生效，如果是url的方式，则zuul.host开头的生效，与ribbon超时配置相呼应
   host:
-    connect-timeout-millis: 10000
-    socket-timeout-millis: 60000
+    connect-timeout-millis: 10000 # 10秒
+    socket-timeout-millis: 60000 # 60秒
   add-proxy-headers: true
   ribbon:
     eager-load:
       enabled: true
+
+#这里面ribbon和hystrix的超时配置是同时生效的，哪个值小哪个生效，另一个就看不到效果了。
+# 超时配置 ，如果路由方式是serviceId的方式，那么ribbon的生效，如果是url的方式，则zuul.host开头的生效，与zuul.host超时配置相呼应
 ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 10000
+  ReadTimeout: 10000 # 10秒
+  ConnectTimeout: 10000 # 10秒
+# 熔断hystrix配置,default代表默认，如果你想为某个特定的service配熔断超时策略，可以用具体某个服务的service_id
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
+            timeoutInMilliseconds: 60000 # 熔断超时配置60秒
 
 # 这里有个cron定时任务表达式，每5分钟执行一次,com.cloud.gateway.filter.BlackIPAccessFilter
 cron:
