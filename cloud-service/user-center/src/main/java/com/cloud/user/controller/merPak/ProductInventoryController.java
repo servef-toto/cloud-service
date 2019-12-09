@@ -1,12 +1,13 @@
-package com.cloud.user.controller;
+package com.cloud.user.controller.merPak;
 
 import com.cloud.model.user.model.MerInvetoryEntity;
+import com.cloud.user.config.RedisLock;
 import com.cloud.user.listen.Response;
 import com.cloud.user.listen.queue.ProductInventoryCacheRefreshRequest;
 import com.cloud.user.listen.queue.ProductInventoryDBUpdateRequest;
 import com.cloud.user.listen.queue.Request;
 import com.cloud.user.service.merPak.ProductInventoryService;
-import com.cloud.user.service.RequestAsyncProcessService;
+import com.cloud.user.service.merPak.RequestAsyncProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,8 @@ public class ProductInventoryController {
     private RequestAsyncProcessService requestAsyncProcessService;
     @Resource
     private ProductInventoryService productInventoryService;
+    @Resource
+    private RedisLock redisLock;
 
     /**
      * 更新商品库存
@@ -39,7 +42,7 @@ public class ProductInventoryController {
 
         try {
             Request request = new ProductInventoryDBUpdateRequest(
-                    productInventory, productInventoryService);
+                    productInventory, productInventoryService,redisLock);
             requestAsyncProcessService.process(request);
             response = new Response(Response.SUCCESS);
         } catch (Exception e) {
@@ -61,7 +64,7 @@ public class ProductInventoryController {
         MerInvetoryEntity productInventory = null;
 
         try {
-            Request request = new ProductInventoryCacheRefreshRequest(productId, productInventoryService,true);
+            Request request = new ProductInventoryCacheRefreshRequest(productId, productInventoryService,true,redisLock);
             requestAsyncProcessService.process(request);
 
             // 将请求扔给service异步去处理以后，就需要while(true)一会儿，在这里hang住
@@ -100,7 +103,7 @@ public class ProductInventoryController {
                 // 将缓存刷新一下
                 // 这个过程，实际上是一个读操作的过程，但是没有放在队列中串行去处理，还是有数据不一致的问题
                 request = new ProductInventoryCacheRefreshRequest(
-                        productId, productInventoryService, false);
+                        productId, productInventoryService, false,redisLock);
                 requestAsyncProcessService.process(request);
 
                 // 代码会运行到这里，只有三种情况：

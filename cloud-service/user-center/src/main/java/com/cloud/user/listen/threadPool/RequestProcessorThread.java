@@ -64,6 +64,7 @@ public class RequestProcessorThread implements Callable {
                         // 说明前面已经有一个数据库更新请求+一个缓存刷新请求了
                         if(flag != null && !flag) {
                             // 对于这种读请求，直接就过滤掉，不要放到后面的内存队列里面去执行了
+                            logger.info("===========日志===========: 该商品已经存在最新的库存，无需放到内存队列里面去执行，商品id=" + request.getProductId());
                             return true;
                         }
                     }

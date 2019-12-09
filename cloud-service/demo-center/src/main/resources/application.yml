@@ -1,0 +1,73 @@
+server:
+  port: 8081   # 这里配置成0，启动时，项目会随机一个端口号
+
+thread:
+  size: 10
+
+# spring cloud config 配置
+spring:
+  application:
+    name: user-center
+
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-wz9yy0528x91z1iqdco.mysql.rds.aliyuncs.com:3306/luu_user_center?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root0319@
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-test-query: SELECT 1
+
+  # rabbitmq的配置
+  rabbitmq:
+    host: local.rabbitmq.com
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+  # redis的配置
+  redis:
+    host: local.redis.com
+    port: 6379
+    password: 1
+    timeout: 10s
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 300 # 控制一个pool最多有多少个状态为idle的jedis实例
+        max-active: 300   #连接池最大空闲数,控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态就成exhausted了
+        max-wait: -1  #连接池最大等待时间,表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException
+
+  # mvc 的配置
+  mvc:
+    servlet:
+      load-on-startup: 1 # servlet的启动优先级
+  # mvc aop 切面编程的配置
+  aop:
+    proxy-target-class: true #proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+                            #如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+                            #如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用
+
+# mybatis的配置
+mybatis:
+  type-aliases-package: com.cloud.model.user  # 别名包映射地址
+  mapper-locations: classpath:/mybatis-mappers/* # 映射文件扫描地址
+  configuration:
+    mapUnderscoreToCamelCase: true
+
+#这里面ribbon和hystrix的超时配置是同时生效的，哪个值小哪个生效，另一个就看不到效果了。
+# 超时配置 ，如果路由方式是serviceId的方式，那么ribbon的生效，如果是url的方式，则zuul.host开头的生效，与zuul.host超时配置相呼应
+ribbon:
+  ReadTimeout: 10000 # 10秒
+  ConnectTimeout: 10000 # 10秒
+# 熔断hystrix配置,default代表默认，如果你想为某个特定的service配熔断超时策略，可以用具体某个服务的service_id
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000 # 熔断超时配置60秒

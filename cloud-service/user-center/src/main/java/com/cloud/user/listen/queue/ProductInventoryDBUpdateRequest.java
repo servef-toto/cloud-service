@@ -24,7 +24,6 @@ import java.util.UUID;
 public class ProductInventoryDBUpdateRequest implements Request {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     private RedisLock redisLock;
 
     /**
@@ -37,9 +36,10 @@ public class ProductInventoryDBUpdateRequest implements Request {
     private ProductInventoryService productInventoryService;
 
     public ProductInventoryDBUpdateRequest(MerInvetoryEntity productInventory,
-                                           ProductInventoryService productInventoryService) {
+                                           ProductInventoryService productInventoryService, RedisLock redisLock) {
         this.productInventory = productInventory;
         this.productInventoryService = productInventoryService;
+        this.redisLock = redisLock;
     }
 
     /**

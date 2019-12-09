@@ -1,8 +1,8 @@
-package com.cloud.user.service.impl;
+package com.cloud.user.service.merPak.impl;
 
 import com.cloud.user.listen.queue.Request;
 import com.cloud.user.listen.queue.RequestQueue;
-import com.cloud.user.service.RequestAsyncProcessService;
+import com.cloud.user.service.merPak.RequestAsyncProcessService;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ArrayBlockingQueue;

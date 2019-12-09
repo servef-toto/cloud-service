@@ -44,12 +44,6 @@ import java.util.Objects;
  *
  *
  *
- *
- *
- *
- *
- *
- *
  *      从 Redis 2.6.12 版本开始， SET 命令的行为可以通过一系列参数来修改：
  *
  * EX seconds ： 将键的过期时间设置为 seconds 秒。 执行 SET key value EX seconds 的效果等同于执行 SETEX key seconds value 。
@@ -80,16 +74,7 @@ public class RedisLock {
      * @return
      */
     public boolean lock(Long id,String uuid){
-//        logger.info("获取jedis资源开始时间"+new Date());
-        Jedis jedis = null;
-//        try{
-            jedis = jedisPool.getResource();
-//        }catch (Exception e){
-//            logger.info("获取jedis资源结束时间"+new Date());
-//            while (jedis == null){
-//                jedis = jedisPool.getResource();
-//            }
-//        }
+        Jedis jedis = jedisPool.getResource();
         Long start = System.currentTimeMillis();
         String lockStr = lock_key + "_" + id;
         try{
@@ -125,16 +110,8 @@ public class RedisLock {
      */
     public boolean unlock(Long id,String uuid){
         String lockStr = lock_key + "_" + id;
-//        logger.info("获取jedis资源开始时间"+new Date());
-        Jedis jedis = null;
-//        try{
-            jedis = jedisPool.getResource();
-//        }catch (Exception e){
-////            logger.info("获取jedis资源结束时间"+new Date());
-//            while (jedis == null){
-//                jedis = jedisPool.getResource();
-//            }
-//        }
+        Jedis jedis = jedisPool.getResource();
+
         StringBuffer scricpt = new StringBuffer();
         scricpt.append("if redis.call('get',KEYS[1]) == ARGV[1] then");
         scricpt.append("   return redis.call('del',KEYS[1]) ");
@@ -144,7 +121,6 @@ public class RedisLock {
         try {
             Object result = jedis.eval(scricpt.toString(), Collections.singletonList(lockStr),
                     Collections.singletonList(uuid));
-//            logger.info("线程尝试释放锁:"+Thread.currentThread().getName());
             if("1".equals(result.toString())){
                 logger.info("线程释放锁成功:"+Thread.currentThread().getName());
                 return true;

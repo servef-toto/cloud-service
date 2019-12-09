@@ -3,6 +3,8 @@ package com.cloud.user.listen.queue;
 import com.cloud.model.user.model.MerInvetoryEntity;
 import com.cloud.user.config.RedisLock;
 import com.cloud.user.service.merPak.ProductInventoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
@@ -13,8 +15,8 @@ import java.util.UUID;
  *
  */
 public class ProductInventoryCacheRefreshRequest implements Request {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
     private RedisLock redisLock;
     /**
      * 商品id
@@ -31,10 +33,12 @@ public class ProductInventoryCacheRefreshRequest implements Request {
 
     public ProductInventoryCacheRefreshRequest(long productId,
                                                ProductInventoryService productInventoryService,
-                                               boolean forceRefresh) {
+                                               boolean forceRefresh,
+                                               RedisLock redisLock) {
         this.productId = productId;
         this.productInventoryService = productInventoryService;
         this.forceRefresh = forceRefresh;
+        this.redisLock = redisLock;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class ProductInventoryCacheRefreshRequest implements Request {
             if (redisLock.lock(productId, uuid)) {
                 // 从数据库中查询最新的商品库存数量
                 MerInvetoryEntity productInventory = productInventoryService.findProductInventory(productId);
-                System.out.println("===========日志===========: 已查询到商品最新的库存数量，商品id=" + productId + ", 商品库存数量=" + productInventory.getMerCount());
+                logger.info("===========日志===========: 已查询到商品最新的库存数量，商品id=" + productId + ", 商品库存数量=" + productInventory.getMerCount());
                 // 将最新的商品库存数量，刷新到redis缓存中去
                 productInventoryService.setProductInventoryCache(productInventory);
             }

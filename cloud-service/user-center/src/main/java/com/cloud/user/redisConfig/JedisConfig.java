@@ -57,7 +57,7 @@ public class JedisConfig extends CachingConfigurerSupport {
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);  // 连接池最大等待时间 100s，如果在规定时间没有获取到则会报错,（使用负值表示没有限制）
         jedisPoolConfig.setMaxTotal(maxIdle); //在获取当时通过pool能够获取到的最大的连接的jedis个数（已经被客户端 连接上或者正在闲置等待客户端连接），默认8
         jedisPoolConfig.setMinIdle(minIdle); //最小的闲置连接数，仅仅在此值为正数且timeBetweenEvictionRunsMillis值大于0时有效
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig,host,port,1000,password);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig,host,port,2000,password);
 
         logger.info("JedisPool注入成功！");
         logger.info("redis地址：" + host + ":" + port);
