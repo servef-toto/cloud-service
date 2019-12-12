@@ -6,6 +6,7 @@ import com.cloud.user.demo.redis.zSet.constants.JobStatus;
 import com.cloud.user.demo.redis.zSet.container.DelayBucket;
 import com.cloud.user.demo.redis.zSet.container.JobPool;
 import com.cloud.user.demo.redis.zSet.container.ReadyQueue;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class JobService {
     public Job getProcessJob(String topic) {
         // 拿到任务
         DelayJob delayJob = readyQueue.popJob(topic);
-        if (delayJob == null || delayJob.getJodId() == 0L) {
+        if (delayJob == null || StringUtils.isEmpty(delayJob.getJodId())) {
             return new Job();
         }
         Job job = jobPool.getJob(delayJob.getJodId());
@@ -59,7 +60,7 @@ public class JobService {
      * @param jobId
      * @return
      */
-    public void finishJob(Long jobId) {
+    public void finishJob(String jobId) {
         jobPool.removeDelayJob(jobId);
     }
 
@@ -68,7 +69,7 @@ public class JobService {
      * @param jobId
      * @return
      */
-    public void deleteJob(Long jobId) {
+    public void deleteJob(String jobId) {
         jobPool.removeDelayJob(jobId);
     }
 

@@ -96,8 +96,12 @@ public class DelayBucket {
      * @param delayJob
      */
     public void removeDelayTime(Integer index,DelayJob delayJob) {
-        String name = bucketNames.get(index);
-        BoundZSetOperations bucket = getBucket(name);
-        bucket.remove(delayJob);
+        try {
+            String name = bucketNames.get(index);
+            BoundZSetOperations bucket = getBucket(name);
+            bucket.remove(delayJob);
+        }catch (Exception e){
+            log.error("移除延时任务异常："+e.getMessage());
+        }
     }
 }

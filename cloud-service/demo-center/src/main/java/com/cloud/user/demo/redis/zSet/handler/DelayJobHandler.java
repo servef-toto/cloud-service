@@ -8,9 +8,12 @@ import com.cloud.user.demo.redis.zSet.constants.JobStatus;
 import com.cloud.user.demo.redis.zSet.container.DelayBucket;
 import com.cloud.user.demo.redis.zSet.container.JobPool;
 import com.cloud.user.demo.redis.zSet.container.ReadyQueue;
+import com.cloud.user.redisConfig.RedisLock;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @Slf4j
 @Data
@@ -32,6 +35,8 @@ public class DelayJobHandler implements Runnable{
      */
     private int index;
 
+    RedisTemplate redisTemplate;
+
     /**
      */
     @Override
@@ -39,40 +44,50 @@ public class DelayJobHandler implements Runnable{
         log.info("定时任务开始执行");
         while (true) {
             try {
-                DelayJob delayJob = delayBucket.getFirstDelayTime(index);
-                //没有任务
-                if (delayJob == null) {
-                    sleep();
-                    continue;
-                }
-                // 发现延时任务
-                // 延迟时间没到
-                if (delayJob.getDelayDate() > System.currentTimeMillis()) {
-                    sleep();
-                    continue;
-                }
-                Job job = jobPool.getJob(delayJob.getJodId());
+                    DelayJob delayJob = delayBucket.getFirstDelayTime(index);
+                    //没有任务
+                    if (delayJob == null) {
+                        sleep();
+                        continue;
+                    }
+                    // 发现延时任务
+                    // 延迟时间没到
+                    if (delayJob.getDelayDate() > System.currentTimeMillis()) {
+                        sleep();
+                        continue;
+                    }
+                    Job job = jobPool.getJob(delayJob.getJodId());
+                    //延迟任务元数据不存在
+                    if (job == null) {
+                        log.info("移除不存在任务:{}", JSON.toJSONString(delayJob));
+                        delayBucket.removeDelayTime(index,delayJob);
+                        continue;
+                    }
 
-                //延迟任务元数据不存在
-                if (job == null) {
-                    log.info("移除不存在任务:{}", JSON.toJSONString(delayJob));
-                    delayBucket.removeDelayTime(index,delayJob);
-                    continue;
-                }
-
-                JobStatus status = job.getStatus();
-                if (JobStatus.RESERVED.equals(status)) {
-                    log.info("处理超时任务:{}", JSON.toJSONString(job));
-                    // 超时任务
-                    processTtrJob(delayJob,job);
-                } else {
-                    log.info("处理延时任务:{}", JSON.toJSONString(job));
-                    // 延时任务
-                    processDelayJob(delayJob,job);
+                RedisLock redisLock = new RedisLock(redisTemplate,job.getId());
+                try{
+                    if (redisLock.lock()){
+                        JobStatus status = job.getStatus();
+                        if (JobStatus.RESERVED.equals(status)) {
+                            log.info("处理超时任务:{}", JSON.toJSONString(job));
+                            // 超时任务
+                            processTtrJob(delayJob,job);
+                        } else {
+                            log.info("处理延时任务:{}", JSON.toJSONString(job));
+                            // 延时任务
+                            if (!JobStatus.READY.equals(status)){
+                                processDelayJob(delayJob,job);
+                            }
+                        }
+                    }
+                }catch (Exception e){}finally {
+                    redisLock.unlock();
                 }
             } catch (Exception e) {
                 log.error("扫描DelayBucket出错：",e.getStackTrace());
                 sleep();
+            }finally {
+
             }
         }
     }

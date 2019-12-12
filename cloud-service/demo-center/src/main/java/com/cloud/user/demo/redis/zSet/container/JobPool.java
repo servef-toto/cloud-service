@@ -39,7 +39,7 @@ public class JobPool {
      * @param jobId
      * @return
      */
-    public Job getJob(Long jobId) {
+    public Job getJob(String jobId) {
         Object o = getPool().get(jobId);
         if (o instanceof Job) {
             return (Job) o;
@@ -51,7 +51,7 @@ public class JobPool {
      * 移除任务
      * @param jobId
      */
-    public void removeDelayJob (Long jobId) {
+    public void removeDelayJob (String jobId) {
         log.info("任务池移除任务：{}",jobId);
         // 移除任务
         getPool().delete(jobId);

@@ -33,7 +33,7 @@ public class DelayController {
         Job request = new Job();
         int i = index.addAndGet(1);
         Long aLong = Long.valueOf(i);
-        request.setId(aLong);
+        request.setId(String.valueOf(aLong));
         int num = i%3;
         request.setTopic(tag[num]);
         request.setMessage("tag:" + tag[num] + "id:" + i);
@@ -70,13 +70,13 @@ public class DelayController {
      * @return
      */
     @RequestMapping(value = "finish",method = RequestMethod.DELETE)
-    public String finishJob(Long jobId) {
+    public String finishJob(String jobId) {
         jobService.finishJob(jobId);
         return "success";
     }
 
     @RequestMapping(value = "delete",method = RequestMethod.DELETE)
-    public String deleteJob(Long jobId) {
+    public String deleteJob(String jobId) {
         jobService.deleteJob(jobId);
         return "success";
     }

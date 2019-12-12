@@ -21,8 +21,8 @@ public class Job implements Serializable {
      * 延迟任务的唯一标识，用于检索任务
      * @JsonSerialize(using = ToStringSerializer.class)用于修复Long类型太长，而Java序列化JSON丢失精度问题
      */
-    @JsonSerialize(using = ToStringSerializer.class)
-    protected Long id;
+//    @JsonSerialize(using = ToStringSerializer.class)
+    protected String id;
 
     /**
      * 任务类型（具体业务类型）

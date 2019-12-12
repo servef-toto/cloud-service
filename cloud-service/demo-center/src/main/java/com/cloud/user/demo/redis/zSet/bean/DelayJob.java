@@ -16,7 +16,7 @@ public class DelayJob implements Serializable {
     /**
      * 延迟任务的唯一标识
      */
-    private long jodId;
+    private String jodId;
 
     /**
      * 任务的执行时间(当前时间+job的延迟时间)
@@ -36,7 +36,7 @@ public class DelayJob implements Serializable {
     }
 
     public DelayJob(Object value, Double score) {
-        this.jodId = Long.parseLong(String.valueOf(value));
+        this.jodId = String.valueOf(value);
         this.delayDate = System.currentTimeMillis() + score.longValue();
     }
 }

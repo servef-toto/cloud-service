@@ -22,7 +22,7 @@ spring:
 
   # rabbitmq的配置
   rabbitmq:
-    host: local.rabbitmq.com
+    host: 106.12.158.157
     port: 5672
     username: guest
     password: guest
@@ -30,7 +30,7 @@ spring:
 
   # redis的配置
   redis:
-    host: local.redis.com
+    host: 106.12.158.157
     port: 6379
     password: 1
     timeout: 10s
