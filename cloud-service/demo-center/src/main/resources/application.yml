@@ -6,6 +6,8 @@ thread:
 
 # spring cloud config 配置
 spring:
+  profiles:
+    active: dev
   application:
     name: user-center
 

@@ -1,6 +1,8 @@
 package com.cloud.user.demo.redis;
 
 import com.cloud.user.demo.redis.list.RedisMq;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Sender{
+    Logger logger = LoggerFactory.getLogger(Sender.class);
+
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
     /*当这个方法被调用时，将会发布消息到channel1 然后订阅者执行对应的方法

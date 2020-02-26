@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by XiChuan on 2018-11-27.
- */
 @Component
 public class RedisMq {
 
