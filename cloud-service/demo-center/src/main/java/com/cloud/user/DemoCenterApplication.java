@@ -21,11 +21,6 @@ public class DemoCenterApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoCenterApplication.class, args);
-
-		logger.info("启动2");
-		logger.warn("启动2");
-		logger.error("启动2");
-		logger.debug("启动2");
 	}
 
 }

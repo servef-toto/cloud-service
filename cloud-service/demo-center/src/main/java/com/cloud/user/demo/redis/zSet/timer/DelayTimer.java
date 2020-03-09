@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.*;
 
-@Component
+//@Component
 public class DelayTimer implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
